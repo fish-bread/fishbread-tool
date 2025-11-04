@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import puppeteerLocalSettings from '@renderer/func/puppeteerLocalSetting'
 const path = defineModel<string>('path')
 const cookie = defineModel<string>('cookie')
-const settings = defineModel<puppeteerLocalSettings>('settings')
+const settings = defineModel<puppeteerLocalSettings | null>('settings')
 const title = defineModel<string>('title')
 const safeChangeCookie = computed({
   get: () => settings.value?.changeCookie?.value || '', // 安全获取值

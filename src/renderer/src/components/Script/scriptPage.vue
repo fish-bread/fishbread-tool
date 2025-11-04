@@ -13,12 +13,12 @@ import type {
 } from '../../../../types/mian'
 import { theme } from '@renderer/func/themeChange'
 const jsMess = ref<UnifiedMessage[]>([])
-const puppeteer_file = ref<string>()
 const time = ref<string>('3')
+//设置路径名
 const pathName = ref<string>('谷歌浏览器')
+//依赖
 provide('pathName', pathName)
 provide('mess', jsMess)
-provide('all_file', puppeteer_file)
 provide('time', time)
 //设置components
 const JsComponents = [PuppeteerPixivControl, puppeteerBilibiliControl]
@@ -69,15 +69,11 @@ const handleProgressUpdate = (message: allProgressInter): void => {
     })
   }
 }
-const get_chrome_path = async (): Promise<void> => {
-  puppeteer_file.value = await window.api.getChromePath()
-}
 onMounted(() => {
   // 注册监听器，持续接收主进程发来的 pythonOutput 消息
   window.api.puppeteerOutput(handleOutputMessage)
   window.api.puppeteerOutProgress(handleProgressUpdate)
   window.api.puppeteerSeparatorOutput(handleOutputSeparator)
-  get_chrome_path()
 })
 </script>
 

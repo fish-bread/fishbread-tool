@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ref, inject, Ref } from 'vue'
 import { useMessage } from 'naive-ui'
 const message = useMessage()
-const python_file = inject<Ref<string>>('all_file', ref(''))
+import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
+const generalStore = useGeneralStore()
 const choose_python = async (): Promise<void> => {
   const newPath = await window.pythonApi.choosePython()
   if (newPath.canceled) {
-    python_file.value = await window.pythonApi.getPythonPath()
+    generalStore.pythonPath = await window.pythonApi.getPythonPath()
     message.error('未选择python启动路径')
   } else {
     console.log('文件路径', newPath)
-    python_file.value = newPath.filePath
+    generalStore.pythonPath = newPath.filePath
     message.success('路径选择成功')
   }
 }
 const restore_python = async (): Promise<void> => {
-  python_file.value = await window.pythonApi.restorePythonPath()
+  generalStore.pythonPath = await window.pythonApi.restorePythonPath()
   message.success('路径还原成功')
 }
 const python = (): void => {

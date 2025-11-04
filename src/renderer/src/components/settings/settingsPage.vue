@@ -1,48 +1,22 @@
+<!-- 您的设置页面组件 -->
 <script setup lang="ts">
 import settingScript from '@renderer/components/settings/settingScript.vue'
 import settingsGlobal from '@renderer/components/settings/settingGlobal.vue'
 import settingPython from '@renderer/components/settings/settingPython.vue'
 import pageControl from '@renderer/components/pageControl.vue'
-import { ref, onMounted, provide } from 'vue'
-//pixiv
-const pixivPath = ref<string>('')
-const pixivCookie = ref<string>('')
-provide('filePath', pixivPath)
-provide('pixivCookie', pixivCookie)
-//bilibili
-const bilibiliPath = ref<string>('')
-const bilibiliCookie = ref<string>('')
-provide('bilibiliFilePath', bilibiliPath)
-provide('bilibiliCookie', bilibiliCookie)
-onMounted(async () => {
-  pixivPath.value = await window.pixivApi.getPixivFilePath()
-  pixivCookie.value = await window.pixivApi.getPixivCookie()
-  bilibiliPath.value = await window.bilibiliApi.getBilibiliFilePath()
-  bilibiliCookie.value = await window.bilibiliApi.getBilibiliCookie()
-})
-import puppeteerLocalSettings, { PuppeteerSettingsApi } from '@renderer/func/puppeteerLocalSetting'
+import { ref } from 'vue'
+import { useLocalStore } from '@renderer/func/pinia/puppeteerPinia'
 import { settingTitle } from '../../../../types/mian'
 import { pageTitleInter } from '../../../../types/renderer'
-//pixiv
-const pixivApi: PuppeteerSettingsApi = {
-  changeFilePath: window.pixivApi.changePixivFilePath, // 你的Pixiv修改路径API
-  restorePath: window.pixivApi.restorePixivPath, // 你的Pixiv恢复路径API
-  changeCookie: window.pixivApi.changePixivCookie // 你的Pixiv修改Cookie API
-}
-const pixivSettings = new puppeteerLocalSettings(pixivApi, pixivPath, pixivCookie)
-//bilibili
-const BilibiliApi: PuppeteerSettingsApi = {
-  changeFilePath: window.bilibiliApi.setBilibiliFilePath, // 你的Pixiv修改路径API
-  restorePath: window.bilibiliApi.restoreBilibiliFilePath, // 你的Pixiv恢复路径API
-  changeCookie: window.bilibiliApi.setBilibiliCookie // 你的Pixiv修改Cookie API
-}
-const bilibiliSettings = new puppeteerLocalSettings(BilibiliApi, bilibiliPath, bilibiliCookie)
-//标题
+const localStore = useLocalStore()
+
+// 标题定义
 const title = ref<settingTitle>({
   pixiv: 'pixiv',
   bilibili: 'bilibili'
 })
-//切换页面
+
+// 页面切换设置
 const setting_title = ref<pageTitleInter[]>([
   { title: '全局设置', value: 0 },
   { title: 'python设置', value: 1 },
@@ -58,19 +32,20 @@ const num = ref<number>(0)
     <div class="scroll-box">
       <settingsGlobal v-show="num === 0" />
       <settingPython v-show="num === 1" />
+      <!-- 使用 Store 中的状态 -->
       <settingScript
         v-show="num === 2"
         v-model:title="title.pixiv"
-        v-model:path="pixivPath"
-        v-model:cookie="pixivCookie"
-        v-model:settings="pixivSettings"
+        v-model:path="localStore.pixivPath"
+        v-model:cookie="localStore.pixivCookie"
+        v-model:settings="localStore.pixivSettings"
       />
       <settingScript
         v-show="num === 3"
         v-model:title="title.bilibili"
-        v-model:path="bilibiliPath"
-        v-model:cookie="bilibiliCookie"
-        v-model:settings="bilibiliSettings"
+        v-model:path="localStore.bilibiliPath"
+        v-model:cookie="localStore.bilibiliCookie"
+        v-model:settings="localStore.bilibiliSettings"
       />
     </div>
   </div>

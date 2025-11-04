@@ -10,6 +10,7 @@ import { globalPuppeteerApi } from './globalPuppeteerApi'
 import { sharpApi } from './sharpApi'
 import { ru34Api } from './ru34Api'
 import { resourcesApi } from './resourcesApi'
+import { windowApi } from './windowApi'
 
 // Custom APIs for renderer
 const api = {
@@ -17,9 +18,7 @@ const api = {
   ...globalSettingApi,
   ...globalPuppeteerApi,
   ...resourcesApi,
-  maxSizeFunc: () => ipcRenderer.send('maxSizeFunc'), //最大化
-  minimizeFunc: () => ipcRenderer.send('minimizeFunc'), //最小化
-  closeWindowFunc: () => ipcRenderer.send('closeWindowFunc'), //关闭
+  ...windowApi,
   pathToFileURL: (filePath: string) => ipcRenderer.invoke('path-to-file-url', filePath), //文件
 }
 // Use `contextBridge` APIs to expose Electron APIs to

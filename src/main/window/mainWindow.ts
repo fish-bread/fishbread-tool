@@ -3,6 +3,7 @@ import icon from '../../../resources/icon3.png?asset'
 import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 import { createNewChromeWindow } from '../chromeIpcMain/chrome/chromeFunc'
+import { saveWindow } from './windowManager'
 export const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -42,4 +43,6 @@ export const createWindow = (): void => {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  //保存实例
+  saveWindow(mainWindow, 'mainWindow')
 }

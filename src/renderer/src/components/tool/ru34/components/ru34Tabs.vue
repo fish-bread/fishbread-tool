@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue'
 import { ApiResponse, TabsResponse } from '../../../../../../types/ru34'
+import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
+const generalStore = useGeneralStore()
 import { watchDebounced } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 const message = useMessage()
-const port = inject('port', ref(''))
 const tabs = defineModel<string>('tabs')
 const agent = defineModel<boolean>('agent')
 const options = defineModel<TabsResponse[]>('options')
@@ -116,7 +116,7 @@ const clearAllTabs = (): void => {
         </div>
         <div class="agent-in">
           端口:
-          <div style="max-width: 70px">{{ port }}</div>
+          <div style="max-width: 70px">{{ generalStore.port }}</div>
         </div>
       </div>
     </div>

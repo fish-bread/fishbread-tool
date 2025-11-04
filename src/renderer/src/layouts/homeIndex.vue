@@ -5,19 +5,14 @@ import PythonPage from '@renderer/components/python/pythonPage.vue'
 import ScriptPage from '@renderer/components/Script/scriptPage.vue'
 import SettingPage from '@renderer/components/settings/settingsPage.vue'
 import toolPage from '@renderer/components/tool/toolPage.vue'
-import { ref, provide, onMounted, onBeforeMount } from 'vue'
+import { ref, provide, onBeforeMount } from 'vue'
 import HeaderIndex from '@renderer/components/headerIndex.vue'
 import { sendTheme } from '@renderer/func/themeChange'
 const PyComponents = [HomePage, PythonPage, ScriptPage, toolPage, SettingPage]
 const num = ref<number>(0)
-const port = ref<string>('7897')
 provide('HomeComponentNum', num)
-provide('port', port)
 onBeforeMount(() => {
   window.api.sendTheme(sendTheme)
-})
-onMounted(async () => {
-  port.value = await window.api.getPort()
 })
 </script>
 

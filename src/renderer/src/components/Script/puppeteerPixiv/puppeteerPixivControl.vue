@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { inject, Ref, ref } from 'vue'
+import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
+const generalStore = useGeneralStore()
 //注入
 const time = inject<Ref<string>>('time', ref(''))
-const port = inject<Ref<string>>('port', ref(''))
 const href = ref('')
 const headless = ref<boolean>(true)
 const agent = ref<boolean>(true)
@@ -13,7 +14,7 @@ const runPuppeteer = async (): Promise<void> => {
     href: href.value,
     headless: headless.value,
     useProxy: agent.value,
-    port: port.value,
+    port: generalStore.port
   })
 }
 //killPuppeteer
@@ -41,7 +42,7 @@ const killPuppeteer = async (): Promise<void> => {
         <n-switch v-model:value="agent" />
         <div class="agent">
           端口:
-          <div style="max-width: 70px">{{ port }}</div>
+          <div style="max-width: 70px">{{ generalStore.port }}</div>
         </div>
       </div>
     </div>

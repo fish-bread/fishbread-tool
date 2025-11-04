@@ -8,9 +8,16 @@ import { onMounted, provide, ref } from 'vue'
 import type { allMessageInter, allSeparatorInter, UnifiedMessage } from '../../../../types/mian'
 import AllSelect from '@renderer/components/allSelect.vue'
 import { watchThrottled } from '@vueuse/core'
+import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
+const generalStore = useGeneralStore()
 const mess = ref<UnifiedMessage[]>([])
-const python_file = ref<string>()
 const time = ref<string>('3')
+//设置路径名
+const pathName = ref<string>('python')
+//依赖
+provide('pathName', pathName)
+provide('mess', mess)
+provide('time', time)
 //设置components
 const pyComponents = [AirtestControl, CustomPyControl]
 const puppeteerOptions = ref([
@@ -26,13 +33,8 @@ const puppeteerOptions = ref([
 const num = ref<number>(0)
 provide('num', num)
 provide('options', puppeteerOptions)
-//设置路径名
-const pathName = ref<string>('python')
-provide('pathName', pathName)
-//依赖
-provide('mess', mess)
-provide('all_file', python_file)
-provide('time', time)
+
+
 //接收消息
 const handlePythonOutputMessage = (message: allMessageInter): void => {
   console.log('接收到pythonOutput消息:', message)
@@ -49,10 +51,10 @@ const handleOutputSeparator = (message: allSeparatorInter): void => {
   })
 }
 const get_python_path = async (): Promise<void> => {
-  python_file.value = await window.pythonApi.getPythonPath()
+  generalStore.pythonPath = await window.pythonApi.getPythonPath()
 }
 const get_custom_path = async (): Promise<void> => {
-  python_file.value = await window.pythonApi.getCustomPythonPath()
+  generalStore.pythonPath = await window.pythonApi.getCustomPythonPath()
 }
 //监听num
 const watchNum = (): void => {
@@ -62,9 +64,11 @@ const watchNum = (): void => {
       switch (newValue) {
         case 0:
           get_python_path()
+          pathName.value = 'python'
           break
         case 1:
           get_custom_path()
+          pathName.value = '自定义python'
           break
       }
     },

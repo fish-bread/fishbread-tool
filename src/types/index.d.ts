@@ -26,6 +26,7 @@ declare global {
       maxSizeFunc: () => void
       minimizeFunc: () => void
       closeWindowFunc: () => void
+      quitApplyFunc: () => void
       //获取全局设置
       getPort: () => Promise<string>
       setPort: (port: string) => void

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { inject, Ref, ref } from 'vue'
+import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
+const generalStore = useGeneralStore()
 const time = inject<Ref<string>>('time', ref(''))
-const port = inject<Ref<string>>('port', ref(''))
 const href = ref('')
 const headless = ref<boolean>(true)
 const deleteChoose = ref<boolean>(true)
@@ -11,7 +12,7 @@ const runPuppeteer = (): void => {
     href: href.value,
     headless: headless.value,
     useProxy: false,
-    port: port.value,
+    port: generalStore.port,
     deleteChoose: deleteChoose.value
   })
 }

@@ -1,4 +1,4 @@
-# fishbread-tool@v0.3.2
+# fishbread-tool@v0.3.3
 尚未完工
 这是尝试用electron制作个人米奇妙妙小工具的项目,如果你不在乎性能可以尝试一下,基于electron-vite
 # 目前实现的功能

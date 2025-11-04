@@ -24,7 +24,7 @@ onMounted(() => {
 <template>
   <defaultHeaderIndex icon-size="20" :post-data="post" />
   <div>
-    资源地址<a :href="post?.file_url">{{ post?.file_url }}</a>
+    资源地址:&nbsp;<a :href="post?.file_url">{{ post?.file_url }}</a>
   </div>
   <div class="post-media">
     <media-player

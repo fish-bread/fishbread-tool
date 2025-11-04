@@ -20,7 +20,7 @@ export const createWindow = (): void => {
       sandbox: false
     }
   })
-  console.log('窗体id', mainWindow.id)
+  console.log('mainWindowid', mainWindow.id)
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })

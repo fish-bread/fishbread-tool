@@ -14,7 +14,6 @@ import { ru34IpcHandlers } from './tool/ru34/ru34Manage'
 import { registerResourcesIpcHandlers } from './resourcesIpcMain/resourcesManage'
 import { TrayManager } from './tary/trayManager'
 import { readWindow, registerWindowIpcHandlers } from './window/windowManager'
-import { quitApply } from './func/windowFunc'
 // 检测并阻止多实例
 getLock()
 // 注册自定义协议
@@ -81,9 +80,10 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', async () => {
+  /*如果不是macos,就执行
   if (process.platform !== 'darwin') {
     await quitApply()
-  }
+  }*/
 })
 
 // In this file you can include the rest of your app's specific main process

@@ -4,27 +4,26 @@ import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 import BaseChromeTab from '../chromeIpcMain/chrome/BaseChromeTab'
 import {
-  chromeId,
   isGoBack,
   sendChromeWindow,
   sendMessageFunc,
   sendPage,
   createNewChromeWindow
 } from '../chromeIpcMain/chrome/chromeFunc'
-import { getWindow } from '../func/windowFunc'
 import { activeInter } from '../../types/mian'
+import { readWindow, saveWindow } from './windowManager'
 //创建新窗体
-export const createChromeWindow = (): BrowserWindow => {
+export const createChromeWindow = (): void => {
   //获取窗体,检查窗体是否创建
-  const ElectronWindow = getWindow(chromeId)
+  const ElectronWindow = readWindow('chromeWindow')
   if (ElectronWindow && ElectronWindow.isMinimized()) {
     ElectronWindow.restore()
     ElectronWindow.focus()
-    return ElectronWindow
+    return
   } else if (ElectronWindow) {
     console.log('窗体已创建')
     ElectronWindow.focus()
-    return ElectronWindow
+    return
   }
   const chromeWindow = new BrowserWindow({
     width: 1280,
@@ -42,7 +41,7 @@ export const createChromeWindow = (): BrowserWindow => {
     }
   })
 
-  console.log('窗体id', chromeWindow.id)
+  console.log('chromeWindowid', chromeWindow.id)
   // 加载页面
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     chromeWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}#/chrome`)
@@ -51,7 +50,8 @@ export const createChromeWindow = (): BrowserWindow => {
       hash: '#/chrome'
     })
   }
-  return chromeWindow
+  //保存窗体
+  saveWindow(chromeWindow, 'chromeWindow')
 }
 //创建子窗体
 export const createChildWindow = (
@@ -106,7 +106,7 @@ export const createChildWindow = (
   //监听页面加载完毕
   view.webContents.on('did-finish-load', () => {
     console.log('页面已经完全加载完毕')
-    const targetWindow = getWindow(chromeId)
+    const targetWindow = readWindow('chromeWindow')
     if (targetWindow) {
       targetWindow.webContents.send('page-reloaded', true)
     }

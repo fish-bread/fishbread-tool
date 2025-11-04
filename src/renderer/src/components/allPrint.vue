@@ -26,7 +26,6 @@ const watchUlFunc = (): void => {
     height,
     (newValue: number): void => {
       if (newValue > viewportHeightInPixels) {
-        console.log('高度', newValue)
         scrollToBottom()
       }
     },

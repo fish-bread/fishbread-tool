@@ -16,21 +16,18 @@ const isGoForward = ref<boolean>(true)
 const isReload = ref<boolean>(true)
 //tab标签
 const activeTabId = ref<number>(0) // 当前活动标签页的 ID
+//更新标签页文本
 const updateTitle = (message: viewInter[]): void => {
   PageMessage.value = message
-  console.log('标题', message)
-}
+}//更新tab标签页
 const updateTabs = (message: activeInter): void => {
   PageMessage.value = message.viewMessage
   activeTabId.value = message.activeId
-  console.log('消息', message)
 }
 watch(
   activeTabId,
   (newVal) => {
-    console.log('当前活动id', newVal)
     const currentTab = PageMessage.value.find((tab: viewInter) => tab.id === newVal)
-    console.log('我为什么1', currentTab)
     if (currentTab) {
       isGoBack.value = !currentTab.isGoBack
       isGoForward.value = !currentTab.isGoForward
@@ -48,9 +45,7 @@ watch(
 watch(
   PageMessage,
   () => {
-    console.log('当前活动id', activeTabId.value)
     const currentTab = PageMessage.value.find((tab: viewInter) => tab.id === activeTabId.value)
-    console.log('我为什么2', currentTab)
     if (currentTab) {
       isGoBack.value = !currentTab.isGoBack
       isGoForward.value = !currentTab.isGoForward
@@ -65,19 +60,22 @@ watch(
     deep: true
   }
 )
+//前往上一个历史记录
 const goback = (): void => {
   window.chromeApi.goBack(activeTabId.value)
 }
+//前往下一个历史记录
 const goForward = (): void => {
   window.chromeApi.goForward(activeTabId.value)
 }
+//刷新页面
 const reload = (): void => {
   window.chromeApi.reload(activeTabId.value)
 }
+//停止加载
 const stop = (): void => {
   window.chromeApi.pageStop(activeTabId.value)
 }
-
 const animePageButton = (boolean: boolean): void => {
   isReload.value = boolean
 }

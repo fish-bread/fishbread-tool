@@ -16,7 +16,7 @@ export const sharpIpcHandlers = (): void => {
         //读取原文件
         const stats = fileData(pathFile.filePaths)
         if (stats) {
-          console.log('Size:', stats)
+          console.log('Size大小:', stats)
           //返回对应值
           const fileSize = formatSize(stats, pathFile.filePaths)
           return {
@@ -111,7 +111,7 @@ export const sharpIpcHandlers = (): void => {
           }
           //读取后文件
           stats = fileData(outputPath)
-          console.log('Size:', stats)
+          console.log('Size大小:', stats)
           //返回相应的值
           if (stats) {
             fileSize = formatSize(stats, outputPath)

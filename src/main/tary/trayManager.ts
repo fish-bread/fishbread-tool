@@ -15,14 +15,8 @@ export const TrayManager = (mainWindow: BrowserWindow): void => {
   tray.on('right-click', () => {
     toggleTrayMenu(menuWindow as BrowserWindow) // 传递鼠标事件对象
   })
-
-  //也可以添加左键点击支持
+  //添加左键点击显示主窗口
   tray.on('click', () => {
-    toggleTrayMenu(menuWindow as BrowserWindow) // 传递鼠标事件对象
-  })
-
-  //双击托盘图标显示主窗口
-  tray.on('double-click', () => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
       mainWindow.show()
@@ -40,7 +34,6 @@ const toggleTrayMenu = (menuWindow: BrowserWindow): void => {
   } else {
     const [menuWidth, menuHeight] = menuWindow.getSize()
     const cursorPosition = screen.getCursorScreenPoint()
-    console.log(`鼠标位置: x=${cursorPosition.x}, y=${cursorPosition.y}`)
     //获取鼠标点击位置
     let clickPoint: { x: number; y: number }
 

@@ -5,7 +5,6 @@ const generalStore = useGeneralStore()
 const path = ref<string>('')
 const pathName = inject<Ref<string>>('pathName')
 onMounted(() => {
-  console.log('onMounted', pathName?.value, '值', generalStore.pythonPath)
   switch (pathName?.value) {
     case 'python':
       path.value = generalStore.pythonPath
@@ -21,7 +20,6 @@ onMounted(() => {
 watch(
   () => pathName?.value,
   (newVal) => {
-    console.log('onMounted', pathName?.value, '值', generalStore.pythonPath)
     switch (newVal) {
       case 'python':
         path.value = generalStore.pythonPath
@@ -41,7 +39,12 @@ watch(
 watch(
   () => generalStore.pythonPath,
   (newVal) => {
-    console.log('新值', newVal)
+    path.value = newVal
+  }
+)
+watch(
+  () => generalStore.puppeteerChromePath,
+  (newVal) => {
     path.value = newVal
   }
 )

@@ -33,8 +33,6 @@ const puppeteerOptions = ref([
 const num = ref<number>(0)
 provide('num', num)
 provide('options', puppeteerOptions)
-
-
 //接收消息
 const handlePythonOutputMessage = (message: allMessageInter): void => {
   console.log('接收到pythonOutput消息:', message)

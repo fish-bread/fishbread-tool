@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ApiResponse, TabsResponse } from '../../../../../../types/ru34'
 import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
+import { ref } from 'vue'
 const generalStore = useGeneralStore()
-import { watchDebounced } from '@vueuse/core'
+import { watchDebounced, useEventListener } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 const message = useMessage()
 const tabs = defineModel<string>('tabs')
@@ -21,11 +22,6 @@ const ru34Func = async (): Promise<void> => {
         useProxy: agent.value
       })
       console.log('API 返回的数据:', ru34Data.value)
-
-      if (ru34Data.value?.posts?.[0]) {
-        const firstPost = ru34Data.value.posts[0]
-        console.log('第一个帖子详情:', firstPost)
-      }
       message.success('请求成功')
     }
   } catch (error) {
@@ -95,6 +91,17 @@ const clearAllTabs = (): void => {
     message.success('清空成功')
   }
 }
+//解决水平滚动
+const scrollContainerRef = ref<HTMLElement | null>(null)
+
+// 直接在目标元素上监听滚轮事件
+useEventListener(scrollContainerRef, 'wheel', (event: WheelEvent) => {
+  event.preventDefault() // 阻止默认的垂直滚动行为
+  if (scrollContainerRef.value) {
+    // 将垂直滚动距离 deltaY 加到水平滚动位置 scrollLeft 上
+    scrollContainerRef.value.scrollLeft += event.deltaY
+  }
+})
 </script>
 
 <template>
@@ -107,10 +114,9 @@ const clearAllTabs = (): void => {
         placeholder="输入提示词2秒后自动查询标签"
         style="width: 300px"
       />
-      <n-button @click="ru34Func">请求RU34列表</n-button>
       <!--代理-->
       <div class="agent-box">
-        <div style="display: flex; flex-direction: row">
+        <div style="display: flex; flex-direction: row; gap: 5px">
           <div>网络代理</div>
           <n-switch v-model:value="agent" />
         </div>
@@ -139,15 +145,18 @@ const clearAllTabs = (): void => {
         <span>已选标签: {{ searchTabs?.length }} 个</span>
       </div>
       <!--已选择标签-->
-      <div
-        v-for="(item, index) in searchTabs"
-        :key="'selected-' + index"
-        class="tabs-box active cursorPointer"
-        @click="handleSearchTabClick(item, index)"
-      >
-        {{ item }}
+      <div class="search-back-tab-list">
+        <div
+          v-for="(item, index) in searchTabs"
+          :key="'selected-' + index"
+          class="tabs-box active cursorPointer"
+          @click="handleSearchTabClick(item, index)"
+        >
+          {{ item }}
+        </div>
       </div>
     </div>
+    <n-button style="margin-top: 10px" @click="ru34Func">请求RU34列表</n-button>
   </div>
 </template>
 
@@ -160,7 +169,7 @@ const clearAllTabs = (): void => {
 .tabs-back-box {
   box-sizing: border-box;
   padding: 10px 0 10px 0;
-  width: 80%;
+  width: 70%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -171,6 +180,22 @@ const clearAllTabs = (): void => {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  overflow: auto;
+  width: 80%;
+  justify-content: center;
+  .search-back-tab-list {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    overflow: auto;
+    flex-wrap: wrap;
+    max-height: 80px;
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+  }
   .controls {
     display: flex;
     flex-direction: row;
@@ -198,6 +223,7 @@ const clearAllTabs = (): void => {
   position: absolute;
   top: 10px;
   left: 10px;
+  gap: 5px;
   .agent-in {
     display: flex;
     flex-direction: row;

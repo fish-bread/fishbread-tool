@@ -18,7 +18,15 @@ const closeWindowFunc = (): void => {
 //加入收藏
 const addFavorite = async (): Promise<void> => {
   if (post.postData) {
-    const success = await window.ru34Api.addFavorite(post.postData)
+    message.loading('正在加入收藏')
+    // 创建纯数据对象
+    const postData: sendPost = {
+      preview_url: post.postData.preview_url,
+      sample_url: post.postData.sample_url,
+      file_url: post.postData.file_url,
+      id: post.postData.id
+    }
+    const success = await window.ru34Api.addRu34Favorite(postData)
     if (success) {
       message.success('收藏成功')
     } else {
@@ -42,22 +50,22 @@ const post = defineProps<{
   >
     <div class="app-drag window-left"></div>
     <div class="window-right">
-      <div class="control-button cursorPointer" @click="addFavorite">
+      <div class="control-button cursorPointer" title="收藏" @click="addFavorite">
         <n-icon :size="iconSize">
           <Star20Regular />
         </n-icon>
       </div>
-      <div class="control-button cursorPointer" @click="minimizeFunc">
+      <div class="control-button cursorPointer" title="最小化" @click="minimizeFunc">
         <n-icon :size="iconSize">
           <Subtract20Regular />
         </n-icon>
       </div>
-      <div class="control-button cursorPointer" @click="maxSizeFunc">
+      <div class="control-button cursorPointer" title="控制窗体" @click="maxSizeFunc">
         <n-icon :size="iconSize">
           <Maximize20Regular />
         </n-icon>
       </div>
-      <div class="control-button cursorPointer close" @click="closeWindowFunc">
+      <div class="control-button cursorPointer close" title="关闭窗体" @click="closeWindowFunc">
         <n-icon :size="iconSize">
           <Dismiss20Regular />
         </n-icon>

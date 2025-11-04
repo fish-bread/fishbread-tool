@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ApiResponse, Post, sendPost } from '../../../../../../types/ru34'
+import PlayCircleRegular from '@vicons/fa/PlayCircleRegular'
 defineProps<{
   ru34Data: ApiResponse | null
 }>()
@@ -17,10 +18,10 @@ const showResource = (Post: Post): void => {
   }
   window.api.showResources(sendPost)
 }
-// 获取视频缩略图或预览图
+/* 获取视频缩略图或预览图
 const getThumbnailUrl = (post: Post): string => {
   return post.preview_url || post.sample_url || '/default-thumbnail.jpg'
-}
+}*/
 </script>
 
 <template>
@@ -36,16 +37,17 @@ const getThumbnailUrl = (post: Post): string => {
             </span>
           </div>
           <div class="post-media">
-            <div @click="showResource(post)">
-              <video
-                v-if="post?.file_url.endsWith('.mp4')"
-                :src="post?.file_url"
-                :poster="getThumbnailUrl(post)"
-              />
+            <div class="cursorPointer" @click="showResource(post)">
+              <div v-if="post?.file_url.endsWith('.mp4')" class="video-show-box">
+                <img :src="post?.sample_url" :alt="`${post?.sample_url}显示失败,请检测网络`" />
+                <n-icon class="video-show-box-icon" size="50" color="#ffffff">
+                  <PlayCircleRegular />
+                </n-icon>
+              </div>
               <img
                 v-else
-                :src="post?.file_url"
-                :alt="`${post?.file_url}显示失败,请检测网络`"
+                :src="post?.sample_url"
+                :alt="`${post?.sample_url}显示失败,请检测网络`"
                 loading="lazy"
               />
             </div>
@@ -113,6 +115,7 @@ const getThumbnailUrl = (post: Post): string => {
   }
 }
 .post-card {
+  box-sizing: border-box;
   border-radius: 8px;
   padding: 16px;
   background: var(--button-hover-color);
@@ -162,7 +165,7 @@ const getThumbnailUrl = (post: Post): string => {
       width: 100%;
       height: auto;
       display: block;
-      max-height: 300px;
+      max-height: 250px;
       object-fit: contain;
     }
   }
@@ -187,6 +190,15 @@ const getThumbnailUrl = (post: Post): string => {
       font-size: 12px;
       line-height: 1.4;
     }
+  }
+}
+.video-show-box {
+  position: relative;
+  .video-show-box-icon {
+    position: absolute;
+    z-index: 10;
+    top: 45%;
+    left: 45%;
   }
 }
 </style>

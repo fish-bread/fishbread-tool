@@ -9,7 +9,6 @@ const choose_python = async (): Promise<void> => {
     generalStore.pythonPath = await window.pythonApi.getPythonPath()
     message.error('未选择python启动路径')
   } else {
-    console.log('文件路径', newPath)
     generalStore.pythonPath = newPath.filePath
     message.success('路径选择成功')
   }

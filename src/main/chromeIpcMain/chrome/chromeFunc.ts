@@ -1,19 +1,12 @@
 import { activeInter, Tab, viewInter } from '../../../types/mian'
 import { BrowserWindow } from 'electron'
 import BaseChromeTab from './BaseChromeTab'
-import { getWindow } from '../../func/windowFunc'
 import { createChildWindow, createChromeWindow } from '../../window/chromeWindow'
-//简单解决id问题
-export let chromeId: number = 2
-//增加id
-export const changeChromeId = (id: number): void => {
-  chromeId += id
-}
+import { readWindow } from '../../window/windowManager'
 //关闭chrome窗体并自增id并将tab为空
 export const closeChromeWindow = (): void => {
-  const window = getWindow(chromeId)
+  const window = readWindow('chromeWindow')
   window?.destroy()
-  changeChromeId(1)
   BaseChromeTab.tabs = []
 }
 //获取是否可以返回或前进并返回数组给渲染进程
@@ -42,7 +35,7 @@ export const sendMessageFunc = (): viewInter[] => {
 }
 //发送窗体消息
 export const sendChromeWindow = (message: activeInter): void => {
-  const targetWindow = getWindow(chromeId)
+  const targetWindow = readWindow('chromeWindow')
   if (targetWindow) {
     targetWindow.webContents.send('page-message', message)
   }
@@ -51,7 +44,7 @@ export const sendChromeWindow = (message: activeInter): void => {
 export const sendPage = (): void => {
   const sendMessage = sendMessageFunc()
   //向渲染进程发送消息
-  const targetWindow = getWindow(chromeId)
+  const targetWindow = readWindow('chromeWindow')
   if (targetWindow) {
     console.log('消息', sendMessage)
     targetWindow.webContents.send('page-title-updated', sendMessage)
@@ -92,8 +85,9 @@ export const hidePageWindow = (tabId: number): void => {
 }
 //创建新的chrome页面和子页面
 export const createNewChromeWindow = (href: string): void => {
-  const chromeWindow = createChromeWindow()
+  createChromeWindow()
+  const chromeWindow = readWindow('chromeWindow')
   BaseChromeTab.chromeWindow = chromeWindow
-  createChildWindow(chromeWindow, href, BaseChromeTab.getNextId())
+  createChildWindow(chromeWindow as BrowserWindow, href, BaseChromeTab.getNextId())
   sendChromeWindow(sendMaxMessage())
 }

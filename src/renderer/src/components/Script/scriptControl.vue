@@ -3,25 +3,26 @@ import { inject, ref, Ref } from 'vue'
 import { allMessageInter } from '../../../../types/mian'
 import { useMessage } from 'naive-ui'
 const message = useMessage()
+import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
+const generalStore = useGeneralStore()
 //注入
 const mess = inject<Ref<allMessageInter[]>>('mess')
-const chrome_file = inject<Ref<string>>('all_file', ref(''))
 const time = inject<Ref<string>>('time', ref(''))
 //选择浏览器
 const choose_chrome = async (): Promise<void> => {
   const newPath = await window.api.changePuppeteer()
   if (newPath.canceled) {
-    chrome_file.value = await window.api.getChromePath()
+    generalStore.puppeteerChromePath = await window.api.getChromePath()
     message.error('未选择python启动路径')
   } else {
     console.log('文件路径', newPath)
-    chrome_file.value = newPath.filePath
+    generalStore.puppeteerChromePath = newPath.filePath
     message.success('路径选择成功')
   }
 }
 //重置浏览器
 const restore_chrome = async (): Promise<void> => {
-  chrome_file.value = await window.api.restorePuppeteerPath()
+  generalStore.puppeteerChromePath = await window.api.restorePuppeteerPath()
   message.success('路径还原成功')
 }
 //清除控制台

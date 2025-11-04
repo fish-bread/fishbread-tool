@@ -7,7 +7,7 @@ export const createTrayMenuWindow = (): void => {
   //创建无边框、始终置顶的透明窗口
   const menuWindow = new BrowserWindow({
     width: 150,
-    height: 150,
+    height: 67,
     frame: false,
     resizable: false,
     show: false,
@@ -35,6 +35,7 @@ export const createTrayMenuWindow = (): void => {
       menuWindow.hide()
     }
   })
+  console.log('menuWindowid', menuWindow.id)
   //保存实例
   saveWindow(menuWindow, 'menuWindow')
 }

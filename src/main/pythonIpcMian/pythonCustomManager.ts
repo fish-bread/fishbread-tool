@@ -21,7 +21,6 @@ export const registerCustomPythonIpcHandlers = (): void => {
       pythonPrintFunc('error', `该路径不是一个有效的python脚本路径`)
       return
     }
-    console.log('runPython')
     console.log('Python脚本路径:', pythonScriptPath)
     PyShell = new PythonShell(pythonScriptPath, {
       encoding: 'utf-8',

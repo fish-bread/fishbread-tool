@@ -106,9 +106,10 @@ declare global {
     ru34Api: {
       ru34Search: (ru34Request: ru34Request) => Promise<ApiResponse>
       ru34SearchTabs: (ru34Request: ru34Request) => Promise<TabsResponse[]>
-      addFavorite: (postData: sendPost) => Promise<boolean>
+      addRu34Favorite: (postData: sendPost) => Promise<boolean>
       handleFavoriteList: (callback: (postData: sendPost[]) => void) => void
       favoriteList: () => Promise<sendPost[]>
+      removeFavoriteList: (id: number) => Promise<sendPost[]>
     }
   }
 }

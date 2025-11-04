@@ -45,11 +45,15 @@ export const ru34IpcHandlers = (): void => {
     }
   )
   //添加收藏到本地
-  ipcMain.handle('ru34AddFavorite', (_event, postData: sendPost): boolean => {
+  ipcMain.handle('addRu34Favorite', (_event, postData: sendPost): boolean => {
     return ru34Class.addFavoriteList(postData)
   })
   //初始化历史收藏
   ipcMain.handle('favoriteList', (): sendPost[] => {
     return ru34Class.searchLocalFavoriteList()
+  })
+  //删除特定记录
+  ipcMain.handle('removeFavoriteList', (_event, id: number): sendPost[] => {
+    return ru34Class.removeFavoriteList(id)
   })
 }

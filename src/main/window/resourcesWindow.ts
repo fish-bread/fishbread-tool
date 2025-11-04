@@ -2,9 +2,9 @@ import { BrowserWindow, shell } from 'electron'
 import icon from '../../../resources/icon3.png?asset'
 import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
-import { changeChromeId, chromeId, createNewChromeWindow } from '../chromeIpcMain/chrome/chromeFunc'
-import { getWindow } from '../func/windowFunc'
+import { createNewChromeWindow } from '../chromeIpcMain/chrome/chromeFunc'
 import { sendPost } from '../../types/ru34'
+import { readResourcesWindow, saveWindow } from './windowManager'
 export const createResourcesWindow = (filePath: sendPost): void => {
   const resourcesWindow = new BrowserWindow({
     width: 1280,
@@ -20,13 +20,13 @@ export const createResourcesWindow = (filePath: sendPost): void => {
       sandbox: false
     }
   })
-  console.log('窗体id', resourcesWindow.id)
+  console.log('resourcesWindowid', resourcesWindow.id)
+  //保存窗体
+  saveWindow(resourcesWindow, 'resourcesWindow')
   resourcesWindow.on('ready-to-show', () => {
     resourcesWindow.show()
-    //发送数据到窗体
-    changeChromeId(1)
-    const targetWindow = getWindow(chromeId - 1)
-    console.log('路径', filePath, targetWindow?.id)
+    const targetWindow = readResourcesWindow(resourcesWindow.id, 'resourcesWindow')
+    console.log('路径', filePath)
     if (targetWindow) {
       targetWindow.webContents.send('resources-path', filePath)
     }

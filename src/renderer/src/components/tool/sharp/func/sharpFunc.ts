@@ -41,7 +41,6 @@ export const useSharp = (): UseSharpReturn => {
       fileImg.value = []
       for (let i = 0; i < userDialog.value.fileData?.length; i++) {
         fileImg.value.push(await window.api.pathToFileURL(fileData.value[i].filePath as string))
-        console.log('文件路径', fileImg.value, '文件1', fileData.value[i].filePath)
       }
       //添加显示
       showImgData.value = showFunc(false, fileData.value, fileImg.value)

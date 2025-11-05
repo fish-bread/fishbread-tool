@@ -18,9 +18,11 @@ export const ru34IpcHandlers = (): void => {
       console.log('API 原始响应:', response.data)
       //直接返回数组
       return { posts: response.data }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Rule34 API 错误:', error)
-      throw error // 重新抛出非 Axios 错误
+      //报错
+      const errorCode = baseAxios.axiosError(error)
+      throw new Error(baseAxios.returnAxiosError(errorCode))
     }
   })
   //请求
@@ -40,7 +42,9 @@ export const ru34IpcHandlers = (): void => {
         return response.data
       } catch (error) {
         console.error('Rule34 API 错误:', error)
-        throw error // 重新抛出非 Axios 错误
+        //报错
+        const errorCode = baseAxios.axiosError(error)
+        throw new Error(baseAxios.returnAxiosError(errorCode))
       }
     }
   )

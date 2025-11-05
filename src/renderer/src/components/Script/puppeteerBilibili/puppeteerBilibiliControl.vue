@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { inject, Ref, ref } from 'vue'
+import { useMessage } from 'naive-ui'
+const message = useMessage()
 import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
 const generalStore = useGeneralStore()
 const time = inject<Ref<string>>('time', ref(''))
@@ -7,6 +9,10 @@ const href = ref('')
 const headless = ref<boolean>(true)
 const deleteChoose = ref<boolean>(true)
 const runPuppeteer = (): void => {
+  if (href.value === '') {
+    message.error('连接为空')
+    return
+  }
   window.bilibiliApi.runBilibiliPuppeteer({
     time: Number(time.value),
     href: href.value,

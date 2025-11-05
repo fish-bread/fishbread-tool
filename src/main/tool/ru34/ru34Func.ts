@@ -16,7 +16,6 @@ class ru34Class {
   }
   //添加到本地
   addFavoriteList = (postData: sendPost): boolean => {
-    console.log('执行')
     this.ru34FavoriteList = store.get('ru34FavoriteList', []) as sendPost[]
     // 检查是否已存在（避免重复添加）
     const exists = this.ru34FavoriteList.some((item) => item.id === postData.id)
@@ -25,10 +24,8 @@ class ru34Class {
       store.set('ru34FavoriteList', this.ru34FavoriteList)
       const targetWindow = getWindow(1)
       targetWindow?.webContents.send('handleFavoriteList', this.ru34FavoriteList)
-      console.log('执行')
       return true
     }
-    console.log('不执行')
     return false
   }
   //查询本地

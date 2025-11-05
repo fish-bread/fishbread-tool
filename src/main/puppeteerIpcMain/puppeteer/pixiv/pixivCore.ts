@@ -47,7 +47,7 @@ class PuppeteerCore extends BasePuppeteer {
       }
       puppeteerPrintFunc(
         'info',
-        `原pixiv图片链接为${PageUrl.imgHref}, 图片api链接为${PageUrl.ajaxHref}`
+        `原pixiv图片链接为${PageUrl.imgHref}, 图片api链接为${PageUrl.ajaxHref},正在查询对应数据,请稍后`
       )
       //查询图片函数
       const searchData = await this.searchPixivFunc(PageUrl)
@@ -91,11 +91,11 @@ class PuppeteerCore extends BasePuppeteer {
     })
     //打开页面
     await this.page?.goto(PageUrl.ajaxHref, { waitUntil: 'domcontentloaded' })
-    await this.page?.waitForSelector('body')
+    await this.page?.waitForSelector('body', { timeout: 15000 })
     puppeteerPrintFunc('info', '成功查询到当前pid图片网址,请稍后')
     //前往图片原页面
     await this.page?.goto(PageUrl.imgHref, { waitUntil: 'domcontentloaded' })
-    await this.page?.waitForSelector('body')
+    await this.page?.waitForSelector('body', { timeout: 15000 })
     return {
       urlsArray: urlsArray,
       PageUrl: PageUrl
@@ -104,8 +104,8 @@ class PuppeteerCore extends BasePuppeteer {
   //查询pid图片名称函数
   searchNamePixivFunc = async (href: pixivHrefInter): Promise<string | null> => {
     await this.page?.goto(href.imgHref, { waitUntil: 'domcontentloaded' })
-    await this.page?.waitForSelector('body')
-    await this.page?.waitForSelector('h1')
+    await this.page?.waitForSelector('body', { timeout: 15000 })
+    await this.page?.waitForSelector('h1', { timeout: 15000 })
     if (this.page) {
       const fileName = await this.page?.$eval('h1', (h1) => {
         return h1.innerHTML
@@ -246,6 +246,7 @@ class PuppeteerCore extends BasePuppeteer {
             'error',
             `获取图片${searchData.urlsArray[i]}失败,请检查vpn或网路是否正常`
           )
+          throw new Error('下载失败')
         }
       })
       downloadPromises.push(promise)

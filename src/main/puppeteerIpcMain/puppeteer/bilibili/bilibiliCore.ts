@@ -7,10 +7,7 @@ import {
   searchBilibiliInter
 } from '../../../../types/mian'
 import BasePuppeteer from '../../../general/BasePuppeteer'
-import {
-  puppeteerPrintFunc,
-  puppeteerSeparatorPrintFunc,
-} from '../../../general/allPrint'
+import { puppeteerPrintFunc, puppeteerSeparatorPrintFunc } from '../../../general/allPrint'
 import baseAxios from '../../../general/BaseAxios'
 import BilibiliPath from './bilibiliPath'
 import fs from 'fs'
@@ -47,7 +44,7 @@ class bilibiliCore extends BasePuppeteer {
         await this.exitPuppeteer()
         return
       }
-      puppeteerPrintFunc('info', `原视频链接为${bilibiliHref}`)
+      puppeteerPrintFunc('info', `原视频链接为${bilibiliHref},正在查询对应数据,,请稍后`)
       const bilibiliLink = await this.searchBilibiliFunc(bilibiliHref)
       if (!bilibiliLink) {
         await this.exitPuppeteer()
@@ -130,7 +127,7 @@ class bilibiliCore extends BasePuppeteer {
     let videoHref: string = ''
     //打开页面
     await this.page?.goto(href, { waitUntil: 'domcontentloaded' })
-    await this.page?.waitForSelector('body')
+    await this.page?.waitForSelector('body', { timeout: 15000 })
     //直接提取音视频
     const playInfo = await this.page?.evaluate(() => {
       return (
@@ -171,93 +168,98 @@ class bilibiliCore extends BasePuppeteer {
     fileType: 'mp4' | 'mp3',
     useProxy: boolean
   ): Promise<bilibiliFfmpegInter> => {
-    //获取下载路径
-    const downloadDir = BilibiliPath.getPath()
-    //检测文件路径是否存在
-    if (!fs.existsSync(downloadDir)) {
-      fs.mkdirSync(downloadDir, { recursive: true })
-    }
-    const fileLocalName = `${fileName}.${fileType}`
-    const filePath = join(downloadDir, fileLocalName)
-    puppeteerPrintFunc('info', `文件将保存至目录: ${downloadDir},开始下载${fileType}`)
-    //获取下载开始时间
-    let allTime: number = 0
-    const dataTime: number = Date.now()
-    // 用于网速计算的变量
-    const netSpeed: netSpeedInter = {
-      lastUpdateTime: Date.now(), // 初始化为当前时间
-      lastDownloadedSize: 0, // 初始下载量为0
-      lastFormattedSpeed: '0.00 KB/s', // 初始显示值
-      lastReportTime: 0
-    }
-    //请求下载
-    const pixivAxiosFunc = useProxy ? baseAxios.agentAxios : baseAxios.noAgentAxios
-    const response = await pixivAxiosFunc({
-      signal: this.cancelToken.signal,
-      headers: {
-        Referer: bilibiliHref,
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        Cookie: BilibiliCookie.getCookies()
-      },
-      url: searchHref,
-      responseType: 'stream'
-    })
-    //获取文件总长度
-    let downloadedSize = 0
-    const contentLength = parseInt(response.headers['content-length'])
-    // 创建写入流
-    const writer = fs.createWriteStream(filePath)
-    //写入数据
-    response.data.pipe(writer)
-    //生成唯一uuid
-    const taskId = uuidv4()
-    //更新进度
-    const downTime = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
-    response.data.on('data', (chunk: Buffer) => {
-      downloadedSize += chunk.length
-      //计算进度
-      const progress = this.downloadProgress({
-        chunk,
-        downloadedSize,
-        contentLength
+    try {
+      //获取下载路径
+      const downloadDir = BilibiliPath.getPath()
+      //检测文件路径是否存在
+      if (!fs.existsSync(downloadDir)) {
+        fs.mkdirSync(downloadDir, { recursive: true })
+      }
+      const fileLocalName = `${fileName}.${fileType}`
+      const filePath = join(downloadDir, fileLocalName)
+      puppeteerPrintFunc('info', `文件将保存至目录: ${downloadDir},开始下载${fileType}`)
+      //获取下载开始时间
+      let allTime: number = 0
+      const dataTime: number = Date.now()
+      // 用于网速计算的变量
+      const netSpeed: netSpeedInter = {
+        lastUpdateTime: Date.now(), // 初始化为当前时间
+        lastDownloadedSize: 0, // 初始下载量为0
+        lastFormattedSpeed: '0.00 KB/s', // 初始显示值
+        lastReportTime: 0
+      }
+      //请求下载
+      const pixivAxiosFunc = useProxy ? baseAxios.agentAxios : baseAxios.noAgentAxios
+      const response = await pixivAxiosFunc({
+        signal: this.cancelToken.signal,
+        headers: {
+          Referer: bilibiliHref,
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          Cookie: BilibiliCookie.getCookies()
+        },
+        url: searchHref,
+        responseType: 'stream'
       })
-      // 计算实时网速
-      const formattedSpeed = this.downloadNetSpeed(netSpeed, downloadedSize)
-      puppeteerProgressFunc(
-        'info',
-        downTime,
-        `文件${fileName}.${fileType}正在下载,(${formattedSpeed})`,
-        progress,
-        taskId
-      )
-    })
-    response.data.on('end', () => {
-      const taskElapsedTimeMs = Date.now() - dataTime // 计算单个任务耗时（毫秒）
-      const taskElapsedTimeSec = Number((taskElapsedTimeMs / 1000).toFixed(2)) // 转换为秒，并保留两位小数得到数字类型
-      puppeteerProgressFunc(
-        'closed',
-        downTime,
-        `文件: ${fileName}.${fileType}下载完成,耗时${taskElapsedTimeSec}秒`,
-        100,
-        taskId
-      )
-      allTime = allTime + taskElapsedTimeSec
-      downloadedSize = 0
-    })
-    // 等待下载完成
-    await new Promise<void>((resolve, reject) => {
-      writer.on('finish', () => {
-        resolve()
+      //获取文件总长度
+      let downloadedSize = 0
+      const contentLength = parseInt(response.headers['content-length'])
+      // 创建写入流
+      const writer = fs.createWriteStream(filePath)
+      //写入数据
+      response.data.pipe(writer)
+      //生成唯一uuid
+      const taskId = uuidv4()
+      //更新进度
+      const downTime = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
+      response.data.on('data', (chunk: Buffer) => {
+        downloadedSize += chunk.length
+        //计算进度
+        const progress = this.downloadProgress({
+          chunk,
+          downloadedSize,
+          contentLength
+        })
+        // 计算实时网速
+        const formattedSpeed = this.downloadNetSpeed(netSpeed, downloadedSize)
+        puppeteerProgressFunc(
+          'info',
+          downTime,
+          `文件${fileName}.${fileType}正在下载,(${formattedSpeed})`,
+          progress,
+          taskId
+        )
       })
-      writer.on('error', (error) => {
-        puppeteerPrintFunc('error', `下载文件${fileName}.${fileType}失败,请检查vpn或网路是否正常`)
-        reject(error)
+      response.data.on('end', () => {
+        const taskElapsedTimeMs = Date.now() - dataTime // 计算单个任务耗时（毫秒）
+        const taskElapsedTimeSec = Number((taskElapsedTimeMs / 1000).toFixed(2)) // 转换为秒，并保留两位小数得到数字类型
+        puppeteerProgressFunc(
+          'closed',
+          downTime,
+          `文件: ${fileName}.${fileType}下载完成,耗时${taskElapsedTimeSec}秒`,
+          100,
+          taskId
+        )
+        allTime = allTime + taskElapsedTimeSec
+        downloadedSize = 0
       })
-    })
-    return {
-      filePath,
-      allTime
+      // 等待下载完成
+      await new Promise<void>((resolve, reject) => {
+        writer.on('finish', () => {
+          resolve()
+        })
+        writer.on('error', (error) => {
+          puppeteerPrintFunc('error', `下载文件${fileName}.${fileType}失败,请检查vpn或网路是否正常`)
+          reject(error)
+        })
+      })
+      return {
+        filePath,
+        allTime
+      }
+    } catch (error) {
+      console.error(error)
+      throw new Error('下载失败')
     }
   }
   //用子进程ffmapeg执行合并音视频
@@ -282,7 +284,7 @@ class bilibiliCore extends BasePuppeteer {
     } catch (error) {
       console.log('ffmpeg报错', error)
       puppeteerPrintFunc('error', `无法使用ffmpeg,请确认ffmpeg是否存在,${error}`)
-      throw error
+      throw new Error('ffmpeg报错')
     }
   }
 }

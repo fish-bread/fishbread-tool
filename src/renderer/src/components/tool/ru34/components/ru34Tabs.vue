@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ApiResponse, TabsResponse } from '../../../../../../types/ru34'
 import { useGeneralStore } from '@renderer/func/pinia/generalPinia'
-import { ref } from 'vue'
 const generalStore = useGeneralStore()
-import { watchDebounced, useEventListener } from '@vueuse/core'
+import { watchDebounced } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
+import { extractChineseErrorMessage } from '@renderer/func/ErrorHandle'
 const message = useMessage()
 const tabs = defineModel<string>('tabs')
 const agent = defineModel<boolean>('agent')
@@ -25,8 +25,8 @@ const ru34Func = async (): Promise<void> => {
       message.success('请求成功')
     }
   } catch (error) {
-    console.error('请求错误:', error)
-    message.error('请求出错')
+    console.error('请求列表错误:', error)
+    message.error(extractChineseErrorMessage(error))
   }
 }
 //监听文本变化
@@ -49,7 +49,7 @@ watchDebounced(
       }
     } catch (error) {
       console.error('获取标签失败:', error)
-      message.error('请求出错')
+      message.error(extractChineseErrorMessage(error))
     }
   },
   { debounce: 2000 }
@@ -91,17 +91,6 @@ const clearAllTabs = (): void => {
     message.success('清空成功')
   }
 }
-//解决水平滚动
-const scrollContainerRef = ref<HTMLElement | null>(null)
-
-// 直接在目标元素上监听滚轮事件
-useEventListener(scrollContainerRef, 'wheel', (event: WheelEvent) => {
-  event.preventDefault() // 阻止默认的垂直滚动行为
-  if (scrollContainerRef.value) {
-    // 将垂直滚动距离 deltaY 加到水平滚动位置 scrollLeft 上
-    scrollContainerRef.value.scrollLeft += event.deltaY
-  }
-})
 </script>
 
 <template>

@@ -20,7 +20,7 @@ import { routerOpen } from '@renderer/router/routerFunc'
     <!--左-->
     <div class="head-left app-drag">
       <!--头像-->
-      <n-avatar round :src="AppIcon" size="large" />
+      <n-avatar draggable="false" round :src="AppIcon" size="large" />
       <!--logo-->
       <div class="logo-title">FISHBREAD</div>
     </div>

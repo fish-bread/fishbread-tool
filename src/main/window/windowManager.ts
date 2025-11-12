@@ -4,13 +4,19 @@ import { quitApply } from '../func/windowFunc'
 export let menuWindow: BrowserWindow | null = null
 export let mainWindow: BrowserWindow | null = null
 export let chromeWindow: BrowserWindow | null = null
+export let downloadWindow: BrowserWindow | null = null
 export let resourcesWindow: resourcesWindowInter[] = []
 interface resourcesWindowInter {
   BrowserWindow: BrowserWindow | null
   id: number
 }
-type windowName = 'menuWindow' | 'mainWindow' | 'chromeWindow' | 'resourcesWindow'
-type closeWindowName = 'menuWindow' | 'mainWindow' | 'chromeWindow'
+type windowName =
+  | 'menuWindow'
+  | 'mainWindow'
+  | 'chromeWindow'
+  | 'resourcesWindow'
+  | 'downloadWindow'
+type closeWindowName = 'menuWindow' | 'mainWindow' | 'chromeWindow' | 'downloadWindow'
 //窗体保存
 export const saveWindow = (window: BrowserWindow, windowName: windowName): void => {
   switch (windowName) {
@@ -22,6 +28,9 @@ export const saveWindow = (window: BrowserWindow, windowName: windowName): void 
       break
     case 'chromeWindow':
       chromeWindow = window
+      break
+    case 'downloadWindow':
+      downloadWindow = window
       break
     case 'resourcesWindow':
       resourcesWindow.push({
@@ -40,6 +49,8 @@ export const readWindow = (windowName: windowName): BrowserWindow | null => {
       return menuWindow
     case 'chromeWindow':
       return chromeWindow
+    case 'downloadWindow':
+      return downloadWindow
     default:
       return null
   }
@@ -52,6 +63,17 @@ export const readResourcesWindow = (
   switch (windowName) {
     case 'resourcesWindow':
       return resourcesWindow.find((item) => item.id === id)?.BrowserWindow || null
+    default:
+      return null
+  }
+}
+//读取全部resourcesWindow
+export const readAllResourcesWindow = (
+  windowName: 'resourcesWindow'
+): (BrowserWindow | null)[] | null => {
+  switch (windowName) {
+    case 'resourcesWindow':
+      return resourcesWindow.map((item) => item.BrowserWindow)
     default:
       return null
   }
@@ -76,6 +98,27 @@ export const closeWindow = (windowName: closeWindowName): void => {
     case 'chromeWindow':
       chromeWindow = null
       break
+    case 'downloadWindow':
+      downloadWindow = null
+  }
+}
+//检查窗体是否创建
+export const windowIsCreate = (windowName: windowName): boolean => {
+  //获取窗体,检查窗体是否创建
+  const ElectronWindow = readWindow(windowName)
+  if (windowName === 'downloadWindow' && ElectronWindow) {
+    return true
+  }
+  if (ElectronWindow && ElectronWindow.isMinimized()) {
+    ElectronWindow.restore()
+    ElectronWindow.focus()
+    return true
+  } else if (ElectronWindow) {
+    console.log('窗体已创建')
+    ElectronWindow.focus()
+    return true
+  } else {
+    return false
   }
 }
 //窗体ipc监听
@@ -99,6 +142,7 @@ export const registerWindowIpcHandlers = (): void => {
     if (win) {
       const chromeWin = readWindow('chromeWindow')
       const resources = readResourcesWindow(win.id, 'resourcesWindow')
+      const download = readWindow('downloadWindow')
       switch (win.id) {
         case chromeWin?.id:
           closeChromeWindow()
@@ -106,6 +150,10 @@ export const registerWindowIpcHandlers = (): void => {
           break
         case 1:
           win.hide()
+          break
+        case download?.id:
+          win.close()
+          closeWindow('downloadWindow')
           break
         case resources?.id:
           win.close()

@@ -12,6 +12,7 @@ import {
 } from './mian'
 import { sharpDialogInter, SharpInter } from './sharp'
 import { ApiResponse, ru34Request, TabsResponse, sendPost } from './ru34'
+import { downloadProgressInter } from './downLoad'
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -110,6 +111,19 @@ declare global {
       handleFavoriteList: (callback: (postData: sendPost[]) => void) => void
       favoriteList: () => Promise<sendPost[]>
       removeFavoriteList: (id: number) => Promise<sendPost[]>
+    }
+    downloadApi: {
+      openDownload: (bool: boolean) => void
+      downloadWindowClose: (callback: (bool: boolean) => void) => void
+      downloadItem: (callback: (downloadProgress: downloadProgressInter) => void) => void
+      getDownloadFilePath: () => Promise<string>
+      setDownloadFilePath: () => Promise<pythonFilePath>
+      restoreDownloadFilePath: () => Promise<string>
+      setDownloadCookie: (cookie: string) => Promise<string> //废弃
+      stopDownload: (uuid: string) => void
+      playDownload: (uuid: string) => void
+      cancelledDownload: (uuid: string) => void
+      openResourcesDownloadUrl: (url: string) => void
     }
   }
 }

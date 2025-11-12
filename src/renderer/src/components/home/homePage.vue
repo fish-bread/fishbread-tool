@@ -4,6 +4,7 @@ import FooterIndex from '@renderer/components/footerIndex.vue'
 import { formatMessageWithLinks } from '@renderer/func/linkTextFunc'
 // 假设这是你的原始文本内容
 const originalText = ref('欢迎访问我的博客网站 https://fishbread.net/ ')
+
 </script>
 
 <template>

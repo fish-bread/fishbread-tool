@@ -1,4 +1,3 @@
-// stores/localSetting.ts
 import { defineStore } from 'pinia'
 import { ref, onMounted } from 'vue'
 import puppeteerLocalSettings, { PuppeteerSettingsApi } from '@renderer/func/puppeteerLocalSetting'

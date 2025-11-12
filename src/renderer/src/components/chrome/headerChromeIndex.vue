@@ -19,7 +19,8 @@ const activeTabId = ref<number>(0) // 当前活动标签页的 ID
 //更新标签页文本
 const updateTitle = (message: viewInter[]): void => {
   PageMessage.value = message
-}//更新tab标签页
+}
+//更新tab标签页
 const updateTabs = (message: activeInter): void => {
   PageMessage.value = message.viewMessage
   activeTabId.value = message.activeId
@@ -115,98 +116,100 @@ onMounted(async () => {
     }"
     :data-theme="theme === null ? 'light' : 'dark'"
   >
-    <div class="head-left">
-      <button
-        :disabled="isGoBack"
-        class="control-button"
-        :class="{
-          cursorPointer: isGoBack === false
-        }"
-        :title="isGoBack === false ? '上一页' : ''"
-        @click="goback"
-      >
-        <n-icon :size="20">
-          <ChevronLeft20Regular />
-        </n-icon>
-      </button>
-      <button
-        :disabled="isGoForward"
-        class="control-button"
-        :class="{
-          cursorPointer: isGoForward === false
-        }"
-        :title="isGoForward === false ? '下一页' : ''"
-        @click="goForward"
-      >
-        <n-icon :size="20">
-          <ChevronRight20Regular />
-        </n-icon>
-      </button>
-      <div>
-        <div
-          v-show="isReload"
-          ref="reloadRef"
-          class="control-button cursorPointer"
-          title="刷新页面"
-          @click="reload"
-        >
-          <n-icon :size="20">
-            <ArrowSync20Regular />
-          </n-icon>
-        </div>
+    <div class="header-box">
+      <div class="head-left">
         <button
-          v-show="!isReload"
-          ref="stopRef"
-          class="control-button cursorPointer"
-          title="取消加载页面"
-          @click="stop"
+          :disabled="isGoBack"
+          class="control-button"
+          :class="{
+            cursorPointer: isGoBack === false
+          }"
+          :title="isGoBack === false ? '上一页' : ''"
+          @click="goback"
         >
           <n-icon :size="20">
-            <Dismiss20Regular />
+            <ChevronLeft20Regular />
           </n-icon>
         </button>
-      </div>
-    </div>
-    <div class="center app-drag">
-      <!--标签页-->
-      <VueDraggable
-        v-model="PageMessage"
-        class="head-center"
-        style="user-select: none"
-        :animation="150"
-      >
-        <div
-          v-for="item in PageMessage"
-          :key="item.id"
-          class="head-center-tab app-drag-disable"
-          :class="{ active: activeTabId === item.id }"
-          :title="item.title"
-          @click="switchTab(item.id)"
+        <button
+          :disabled="isGoForward"
+          class="control-button"
+          :class="{
+            cursorPointer: isGoForward === false
+          }"
+          :title="isGoForward === false ? '下一页' : ''"
+          @click="goForward"
         >
-          <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis">
-            {{ item.title }}
-          </div>
-          <!--icon-->
+          <n-icon :size="20">
+            <ChevronRight20Regular />
+          </n-icon>
+        </button>
+        <div>
           <div
-            class="title-button cursorPointer"
-            title="关闭标签页"
-            @click.stop="closeTab(item.id)"
+            v-show="isReload"
+            ref="reloadRef"
+            class="control-button cursorPointer"
+            title="刷新页面"
+            @click="reload"
           >
-            <n-icon :size="15">
-              <Dismiss20Regular />
+            <n-icon :size="20">
+              <ArrowSync20Regular />
             </n-icon>
           </div>
+          <button
+            v-show="!isReload"
+            ref="stopRef"
+            class="control-button cursorPointer"
+            title="取消加载页面"
+            @click="stop"
+          >
+            <n-icon :size="20">
+              <Dismiss20Regular />
+            </n-icon>
+          </button>
         </div>
-      </VueDraggable>
-      <!--添加新页面-->
-      <div class="newPage-button app-drag-disable" title="添加新页面" @click="openBing">
-        <n-icon size="26">
-          <Add20Regular />
-        </n-icon>
       </div>
+      <div class="center app-drag">
+        <!--标签页-->
+        <VueDraggable
+          v-model="PageMessage"
+          class="head-center"
+          style="user-select: none"
+          :animation="150"
+        >
+          <div
+            v-for="item in PageMessage"
+            :key="item.id"
+            class="head-center-tab app-drag-disable"
+            :class="{ active: activeTabId === item.id }"
+            :title="item.title"
+            @click="switchTab(item.id)"
+          >
+            <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis">
+              {{ item.title }}
+            </div>
+            <!--icon-->
+            <div
+              class="title-button cursorPointer"
+              title="关闭标签页"
+              @click.stop="closeTab(item.id)"
+            >
+              <n-icon :size="15">
+                <Dismiss20Regular />
+              </n-icon>
+            </div>
+          </div>
+        </VueDraggable>
+        <!--添加新页面-->
+        <div class="newPage-button app-drag-disable" title="添加新页面" @click="openBing">
+          <n-icon size="26">
+            <Add20Regular />
+          </n-icon>
+        </div>
+      </div>
+      <!--控制栏-->
+      <ChromeWindowControl v-model="PageMessage" icon-size="20" :active-id="activeTabId" />
     </div>
-    <!--控制栏-->
-    <ChromeWindowControl v-model="PageMessage" icon-size="20" :active-id="activeTabId" />
   </div>
 </template>
 
@@ -218,11 +221,17 @@ onMounted(async () => {
 }
 .header {
   @extend %head-box-display-row;
-  height: 40px;
-  padding: 0 0 0 5px;
-  align-items: center;
-  justify-content: space-between;
-  transition: all 0.2s ease;
+  height: 100vh;
+  width: 100%;
+  .header-box {
+    @extend %head-box-display-row;
+    height: 40px;
+    padding: 0 0 0 5px;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+    width: 100%;
+  }
   .head-left {
     @extend %head-box-display-row;
     height: 100%;

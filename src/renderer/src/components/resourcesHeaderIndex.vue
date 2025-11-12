@@ -6,6 +6,8 @@ import Star20Regular from '@vicons/fluent/Star20Regular'
 import { theme } from '@renderer/func/themeChange'
 import { sendPost } from '../../../types/ru34'
 import { useMessage } from 'naive-ui'
+import ArrowDownload20Regular from '@vicons/fluent/ArrowDownload20Regular'
+import { onMounted, ref } from 'vue'
 const message = useMessage()
 //最大化
 const maxSizeFunc = (): void => window.api.maxSizeFunc()
@@ -34,6 +36,18 @@ const addFavorite = async (): Promise<void> => {
     }
   }
 }
+//打开下载任务菜单
+const isShowDownload = ref<boolean>(false)
+const downloadFunc = (): void => {
+  window.downloadApi.openDownload(!isShowDownload.value)
+  isShowDownload.value = !isShowDownload.value
+}
+const changeDownload = (bool: boolean): void => {
+  isShowDownload.value = bool
+}
+onMounted(() => {
+  window.downloadApi.downloadWindowClose(changeDownload)
+})
 const post = defineProps<{
   iconSize: string
   postData: sendPost | null
@@ -50,21 +64,31 @@ const post = defineProps<{
   >
     <div class="app-drag window-left"></div>
     <div class="window-right">
+      <!--下载-->
+      <div class="control-button cursorPointer" title="下载任务" @click="downloadFunc">
+        <n-icon :size="iconSize">
+          <ArrowDownload20Regular />
+        </n-icon>
+      </div>
+      <!--收藏-->
       <div class="control-button cursorPointer" title="收藏" @click="addFavorite">
         <n-icon :size="iconSize">
           <Star20Regular />
         </n-icon>
       </div>
+      <!--最小化-->
       <div class="control-button cursorPointer" title="最小化" @click="minimizeFunc">
         <n-icon :size="iconSize">
           <Subtract20Regular />
         </n-icon>
       </div>
+      <!--控制窗体-->
       <div class="control-button cursorPointer" title="控制窗体" @click="maxSizeFunc">
         <n-icon :size="iconSize">
           <Maximize20Regular />
         </n-icon>
       </div>
+      <!--关闭窗体-->
       <div class="control-button cursorPointer close" title="关闭窗体" @click="closeWindowFunc">
         <n-icon :size="iconSize">
           <Dismiss20Regular />

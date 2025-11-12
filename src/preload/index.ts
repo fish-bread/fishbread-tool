@@ -11,6 +11,7 @@ import { sharpApi } from './sharpApi'
 import { ru34Api } from './ru34Api'
 import { resourcesApi } from './resourcesApi'
 import { windowApi } from './windowApi'
+import { downloadApi } from './downloadApi'
 
 // Custom APIs for renderer
 const api = {
@@ -34,6 +35,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('bilibiliApi', puppeteerBilibiliApi)
     contextBridge.exposeInMainWorld('sharpApi', sharpApi)
     contextBridge.exposeInMainWorld('ru34Api', ru34Api)
+    contextBridge.exposeInMainWorld('downloadApi', downloadApi)
   } catch (error) {
     console.error(error)
   }
@@ -48,4 +50,5 @@ if (process.contextIsolated) {
   window.bilibiliApi = puppeteerBilibiliApi
   window.sharpApi = sharpApi
   window.ru34Api = ru34Api
+  window.downloadApi = downloadApi
 }

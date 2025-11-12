@@ -11,18 +11,13 @@ import {
   createNewChromeWindow
 } from '../chromeIpcMain/chrome/chromeFunc'
 import { activeInter } from '../../types/mian'
-import { readWindow, saveWindow } from './windowManager'
+import { readWindow, saveWindow, windowIsCreate } from './windowManager'
+import downloadClass from '../download/downloadFunc'
 //创建新窗体
 export const createChromeWindow = (): void => {
-  //获取窗体,检查窗体是否创建
-  const ElectronWindow = readWindow('chromeWindow')
-  if (ElectronWindow && ElectronWindow.isMinimized()) {
-    ElectronWindow.restore()
-    ElectronWindow.focus()
-    return
-  } else if (ElectronWindow) {
-    console.log('窗体已创建')
-    ElectronWindow.focus()
+  //检查窗体
+  const bool = windowIsCreate('chromeWindow')
+  if (bool) {
     return
   }
   const chromeWindow = new BrowserWindow({
@@ -50,6 +45,11 @@ export const createChromeWindow = (): void => {
       hash: '#/chrome'
     })
   }
+  chromeWindow.on('ready-to-show', () => {
+    chromeWindow.show()
+  })
+  //监听chrome页面的下载连接并返回数据
+  downloadClass.watchDownload(chromeWindow)
   //保存窗体
   saveWindow(chromeWindow, 'chromeWindow')
 }
@@ -72,8 +72,7 @@ export const createChildWindow = (
       height: bounds.height - 40
     })
   }
-
-  // 设置事件监听器
+  // 设置事件监听器,用于控制子窗体的大小随主窗体的变化而变化
   const setupEventListeners = (): void => {
     chromeWindow.on('ready-to-show', () => {
       chromeWindow.show()

@@ -5,6 +5,7 @@ import { is } from '@electron-toolkit/utils'
 import { createNewChromeWindow } from '../chromeIpcMain/chrome/chromeFunc'
 import { sendPost } from '../../types/ru34'
 import { readResourcesWindow, saveWindow } from './windowManager'
+import downloadClass from '../download/downloadFunc'
 export const createResourcesWindow = (filePath: sendPost): void => {
   const resourcesWindow = new BrowserWindow({
     width: 1280,
@@ -21,6 +22,8 @@ export const createResourcesWindow = (filePath: sendPost): void => {
     }
   })
   console.log('resourcesWindowid', resourcesWindow.id)
+  //监听chrome页面的下载连接并返回数据
+  downloadClass.watchDownload(resourcesWindow)
   //保存窗体
   saveWindow(resourcesWindow, 'resourcesWindow')
   resourcesWindow.on('ready-to-show', () => {

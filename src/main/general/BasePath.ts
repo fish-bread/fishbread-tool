@@ -1,6 +1,12 @@
 import Store from 'electron-store'
 const store = new Store()
-type keyInter = 'pythonPath' | 'customPythonPath' | 'chromePath' | 'pixivPath' | 'bilibiliPath'
+type keyInter =
+  | 'pythonPath'
+  | 'customPythonPath'
+  | 'chromePath'
+  | 'pixivPath'
+  | 'bilibiliPath'
+  | 'downloadPath'
 class BasePathManager {
   protected currentPath: string = ''
   // 返回当前路径

@@ -3,10 +3,11 @@ import { BrowserWindow } from 'electron'
 import BaseChromeTab from './BaseChromeTab'
 import { createChildWindow, createChromeWindow } from '../../window/chromeWindow'
 import { readWindow } from '../../window/windowManager'
+import { createDownloadWindow } from '../../window/downloadWindow'
 //关闭chrome窗体并自增id并将tab为空
 export const closeChromeWindow = (): void => {
   const window = readWindow('chromeWindow')
-  window?.destroy()
+  window?.close()
   BaseChromeTab.tabs = []
 }
 //获取是否可以返回或前进并返回数组给渲染进程
@@ -90,4 +91,5 @@ export const createNewChromeWindow = (href: string): void => {
   BaseChromeTab.chromeWindow = chromeWindow
   createChildWindow(chromeWindow as BrowserWindow, href, BaseChromeTab.getNextId())
   sendChromeWindow(sendMaxMessage())
+  createDownloadWindow()
 }

@@ -13,6 +13,9 @@ const mess = (path: sendPost): void => {
 const getThumbnailUrl = (post: sendPost): string => {
   return post.preview_url || post.sample_url || '/default-thumbnail.jpg'
 }
+const downloadFunc = (url: string): void => {
+  window.downloadApi.openResourcesDownloadUrl(url)
+}
 onBeforeMount(() => {
   window.api.sendTheme(sendTheme)
 })
@@ -23,8 +26,11 @@ onMounted(() => {
 
 <template>
   <defaultHeaderIndex icon-size="20" :post-data="post" />
-  <div>
-    资源地址:&nbsp;<a :href="post?.file_url">{{ post?.file_url }}</a>
+  <div style="display: flex; flex-direction: row; align-items: center;">
+    <div>
+      资源地址:&nbsp;<a :href="post?.file_url">{{ post?.file_url }}</a>
+    </div>
+    <n-button @click="downloadFunc(post?.file_url as string)">下载</n-button>
   </div>
   <div class="post-media">
     <media-player

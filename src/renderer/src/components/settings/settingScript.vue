@@ -18,24 +18,31 @@ const safeChangeCookie = computed({
 <template>
   <div class="puppeteer-setting">
     <h3>{{ title }}爬虫设置</h3>
-    <div class="pixiv-cookie">
-      <n-tooltip :show-arrow="false" trigger="hover">
-        <template #trigger>
-          <div class="pixiv-cookie-view">{{ title }}的cookie:&nbsp;&nbsp;{{ cookie }}</div>
-        </template>
-        {{ cookie }}
-      </n-tooltip>
-      <n-input
-        v-model:value="safeChangeCookie"
-        :placeholder="`请输入${title}Cookie`"
-        style="max-width: 50%"
-      />
-      <n-button @click="settings?.changeCookieFunc">更换cookie</n-button>
-    </div>
-    <div class="path">
-      {{ title }}图片保存文件路径:&nbsp;&nbsp;{{ path }}
-      <n-button @click="settings?.changeFilePathFunc">修改文件路径</n-button>
-      <n-button @click="settings?.restoreFilePathFunc">恢复默认路径</n-button>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div class="pixiv-cookie">
+        <n-tooltip :show-arrow="false" trigger="hover">
+          <template #trigger>
+            <div class="pixiv-cookie-view">{{ title }}的cookie:&nbsp;&nbsp;{{ cookie }}</div>
+          </template>
+          {{ cookie }}
+        </n-tooltip>
+        <n-input
+          v-model:value="safeChangeCookie"
+          :placeholder="`请输入${title}Cookie`"
+          style="max-width: 50%"
+        />
+        <n-button @click="settings?.changeCookieFunc">更换cookie</n-button>
+      </div>
+      <div class="path">
+        <n-tooltip :show-arrow="false" trigger="hover">
+          <template #trigger>
+            <div class="pixiv-cookie-view">{{ title }}保存文件路径:&nbsp;&nbsp;{{ path }}</div>
+          </template>
+          {{ path }}
+        </n-tooltip>
+        <n-button @click="settings?.changeFilePathFunc">修改文件路径</n-button>
+        <n-button @click="settings?.restoreFilePathFunc">恢复默认路径</n-button>
+      </div>
     </div>
   </div>
 </template>
@@ -45,7 +52,7 @@ const safeChangeCookie = computed({
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 .pixiv-cookie {
   max-width: 1000px;

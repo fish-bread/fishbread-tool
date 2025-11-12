@@ -14,6 +14,7 @@ import { ru34IpcHandlers } from './tool/ru34/ru34Manage'
 import { registerResourcesIpcHandlers } from './resourcesIpcMain/resourcesManage'
 import { TrayManager } from './tary/trayManager'
 import { readWindow, registerWindowIpcHandlers } from './window/windowManager'
+import { registerDownloadIpcHandlers } from './download/downloadManager'
 // 检测并阻止多实例
 getLock()
 // 注册自定义协议
@@ -65,6 +66,8 @@ app.whenReady().then(() => {
   ru34IpcHandlers()
   //窗体ipc函数
   registerWindowIpcHandlers()
+  //download窗体ipc
+  registerDownloadIpcHandlers()
   //创建主窗体
   createWindow()
   //启动任务栏

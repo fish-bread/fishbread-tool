@@ -3,13 +3,15 @@
 import settingScript from '@renderer/components/settings/settingScript.vue'
 import settingsGlobal from '@renderer/components/settings/settingGlobal.vue'
 import settingPython from '@renderer/components/settings/settingPython.vue'
+import settingDownload from '@renderer/components/settings/settingDownload.vue'
 import pageControl from '@renderer/components/pageControl.vue'
 import { ref } from 'vue'
 import { useLocalStore } from '@renderer/func/pinia/puppeteerPinia'
+import { useDownloadStore } from '@renderer/func/pinia/downloadPinia'
 import { settingTitle } from '../../../../types/mian'
 import { pageTitleInter } from '../../../../types/renderer'
 const localStore = useLocalStore()
-
+const downloadStore = useDownloadStore()
 // 标题定义
 const title = ref<settingTitle>({
   pixiv: 'pixiv',
@@ -21,7 +23,8 @@ const setting_title = ref<pageTitleInter[]>([
   { title: '全局设置', value: 0 },
   { title: 'python设置', value: 1 },
   { title: 'pixiv设置', value: 2 },
-  { title: 'bilibili设置', value: 3 }
+  { title: 'bilibili设置', value: 3 },
+  { title: '下载设置', value: 4 },
 ])
 const num = ref<number>(0)
 </script>
@@ -46,6 +49,11 @@ const num = ref<number>(0)
         v-model:path="localStore.bilibiliPath"
         v-model:cookie="localStore.bilibiliCookie"
         v-model:settings="localStore.bilibiliSettings"
+      />
+      <settingDownload
+        v-show="num === 4"
+        v-model:path="downloadStore.downloadPath"
+        v-model:settings="downloadStore.downloadSettings"
       />
     </div>
   </div>

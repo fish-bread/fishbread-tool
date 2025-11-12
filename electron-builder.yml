@@ -48,6 +48,7 @@ publish:
   provider: github
   owner: fish-bread
   repo: fishbread-tool
+  token: ${GH_TOKEN}
   releaseType: 'release'
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

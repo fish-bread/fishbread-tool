@@ -15,6 +15,8 @@ import { registerResourcesIpcHandlers } from './resourcesIpcMain/resourcesManage
 import { TrayManager } from './tary/trayManager'
 import { readWindow, registerWindowIpcHandlers } from './window/windowManager'
 import { registerDownloadIpcHandlers } from './download/downloadManager'
+import { autoUpdater } from 'electron-updater'
+import { appUpdate } from './updata/updataIndex'
 // 检测并阻止多实例
 getLock()
 // 注册自定义协议
@@ -33,7 +35,7 @@ protocol.registerSchemesAsPrivileged([
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   //注册自定义协议
   localFileProtocol()
   // Set app user model id for windows
@@ -77,7 +79,12 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+  //发起更新检查
+  console.log('应用已就绪，开始检查更新...')
+  appUpdate()
+  await autoUpdater.checkForUpdates()
 })
+//应用启动
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

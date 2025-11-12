@@ -45,7 +45,9 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: fish-bread
+  repo: fishbread-tool
+  releaseType: 'release'
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

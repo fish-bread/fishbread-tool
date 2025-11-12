@@ -20,7 +20,7 @@ const api = {
   ...globalPuppeteerApi,
   ...resourcesApi,
   ...windowApi,
-  pathToFileURL: (filePath: string) => ipcRenderer.invoke('path-to-file-url', filePath), //文件
+  pathToFileURL: (filePath: string) => ipcRenderer.invoke('path-to-file-url', filePath) //文件
 }
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

@@ -12,6 +12,7 @@ export const downloadApi = {
   getDownloadFilePath: () => ipcRenderer.invoke('getDownloadFilePath'),
   setDownloadFilePath: () => ipcRenderer.invoke('setDownloadFilePath'),
   restoreDownloadFilePath: () => ipcRenderer.invoke('restoreDownloadFilePath'),
+  setDownloadCookie: () => ipcRenderer.invoke('setDownloadCookie'), //废弃
   stopDownload: (uuid: string) => ipcRenderer.send('stopDownload', uuid),
   playDownload: (uuid: string) => ipcRenderer.send('playDownload', uuid),
   cancelledDownload: (uuid: string) => ipcRenderer.send('cancelledDownload', uuid),

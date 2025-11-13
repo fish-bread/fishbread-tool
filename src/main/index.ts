@@ -15,8 +15,7 @@ import { registerResourcesIpcHandlers } from './resourcesIpcMain/resourcesManage
 import { TrayManager } from './tary/trayManager'
 import { readWindow, registerWindowIpcHandlers } from './window/windowManager'
 import { registerDownloadIpcHandlers } from './download/downloadManager'
-import { autoUpdater } from 'electron-updater'
-import { appUpdate } from './updata/updataIndex'
+import { appUpdate, registerUpdateIpcHandlers } from './updata/updataIndex'
 // 检测并阻止多实例
 getLock()
 // 注册自定义协议
@@ -47,6 +46,9 @@ app.whenReady().then(async () => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
+  //发起更新检查
+  console.log('应用已就绪，开始检查更新...')
+  appUpdate()
   // IPC 中间件
   //airtest的ipc函数
   registerPythonIpcHandlers()
@@ -72,6 +74,8 @@ app.whenReady().then(async () => {
   registerDownloadIpcHandlers()
   //创建主窗体
   createWindow()
+  //注册监听
+  registerUpdateIpcHandlers()
   //启动任务栏
   TrayManager(<BrowserWindow>readWindow('mainWindow'))
   app.on('activate', function () {
@@ -79,10 +83,6 @@ app.whenReady().then(async () => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
-  //发起更新检查
-  console.log('应用已就绪，开始检查更新...')
-  appUpdate()
-  await autoUpdater.checkForUpdates()
 })
 //应用启动
 

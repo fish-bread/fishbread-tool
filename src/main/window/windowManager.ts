@@ -5,6 +5,7 @@ export let menuWindow: BrowserWindow | null = null
 export let mainWindow: BrowserWindow | null = null
 export let chromeWindow: BrowserWindow | null = null
 export let downloadWindow: BrowserWindow | null = null
+export let updateWindow: BrowserWindow | null = null
 export let resourcesWindow: resourcesWindowInter[] = []
 interface resourcesWindowInter {
   BrowserWindow: BrowserWindow | null
@@ -16,7 +17,13 @@ type windowName =
   | 'chromeWindow'
   | 'resourcesWindow'
   | 'downloadWindow'
-type closeWindowName = 'menuWindow' | 'mainWindow' | 'chromeWindow' | 'downloadWindow'
+  | 'updateWindow'
+type closeWindowName =
+  | 'menuWindow'
+  | 'mainWindow'
+  | 'chromeWindow'
+  | 'downloadWindow'
+  | 'updateWindow'
 //窗体保存
 export const saveWindow = (window: BrowserWindow, windowName: windowName): void => {
   switch (windowName) {
@@ -31,6 +38,9 @@ export const saveWindow = (window: BrowserWindow, windowName: windowName): void 
       break
     case 'downloadWindow':
       downloadWindow = window
+      break
+    case 'updateWindow':
+      updateWindow = window
       break
     case 'resourcesWindow':
       resourcesWindow.push({
@@ -51,6 +61,8 @@ export const readWindow = (windowName: windowName): BrowserWindow | null => {
       return chromeWindow
     case 'downloadWindow':
       return downloadWindow
+    case 'updateWindow':
+      return updateWindow
     default:
       return null
   }
@@ -100,6 +112,10 @@ export const closeWindow = (windowName: closeWindowName): void => {
       break
     case 'downloadWindow':
       downloadWindow = null
+      break
+    case 'updateWindow':
+      updateWindow = null
+      break
   }
 }
 //检查窗体是否创建
@@ -143,6 +159,7 @@ export const registerWindowIpcHandlers = (): void => {
       const chromeWin = readWindow('chromeWindow')
       const resources = readResourcesWindow(win.id, 'resourcesWindow')
       const download = readWindow('downloadWindow')
+      const updateWindow = readWindow('updateWindow')
       switch (win.id) {
         case chromeWin?.id:
           closeChromeWindow()
@@ -159,6 +176,9 @@ export const registerWindowIpcHandlers = (): void => {
           win.close()
           closeResourcesWindow(win.id, 'resourcesWindow')
           break
+        case updateWindow?.id:
+          win.close()
+          closeWindow('updateWindow')
       }
     }
   })

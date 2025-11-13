@@ -1,3 +1,5 @@
-provider: generic
-url: https://example.com/auto-updates
-updaterCacheDirName: electron-python-updater
+provider: github
+owner: fish-bread
+repo: fishbread-tool
+releaseType: release
+updaterCacheDirName: fishbread-tool-updater

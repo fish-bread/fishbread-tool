@@ -125,5 +125,13 @@ declare global {
       cancelledDownload: (uuid: string) => void
       openResourcesDownloadUrl: (url: string) => void
     }
+    updateApi: {
+      checkUpdate: () => void
+      downloadUpdate: () => void
+      updateApp: () => void
+      updateMessage: (callback: (message: updateMessageInter) => void) => void
+      updateProgress: (callback: (progress: number) => void) => void
+      sendUpdateWindowUpdateMessage: (callback: (message: boolean) => void) => void
+    }
   }
 }

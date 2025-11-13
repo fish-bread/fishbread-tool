@@ -63,6 +63,7 @@ declare module 'vue' {
     SidebarButton: typeof import('./src/components/sidebar/sidebarButton.vue')['default']
     ToolControl: typeof import('./src/components/toolControl.vue')['default']
     ToolPage: typeof import('./src/components/tool/toolPage.vue')['default']
+    UpdateBox: typeof import('./src/components/update/updateBox.vue')['default']
     WindowsControl: typeof import('./src/components/windowsControl.vue')['default']
   }
 }

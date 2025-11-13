@@ -1,5 +1,5 @@
 appId: fishbread.net
-productName: electron-GUI
+productName: fishbread-tool
 directories:
   buildResources: build
 files:
@@ -13,7 +13,7 @@ asarUnpack:
   - resources/**
   - python/**
 win:
-  executableName: electron-GUI
+  executableName: fishbread-tool
   icon: resources/icon3.png
 nsis:
   oneClick: false
@@ -48,7 +48,6 @@ publish:
   provider: github
   owner: fish-bread
   repo: fishbread-tool
-  token: ${GH_TOKEN}
-  releaseType: 'release'
+  releaseType: release
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

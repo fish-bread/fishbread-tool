@@ -1,6 +1,6 @@
 {
   "name": "fishbread-tool",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "这是尝试用electron制作个人米奇妙妙小工具的项目",
   "main": "./out/main/index.js",
   "author": "3434241933@qq.com",

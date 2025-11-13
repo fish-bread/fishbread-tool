@@ -12,6 +12,7 @@ import { ru34Api } from './ru34Api'
 import { resourcesApi } from './resourcesApi'
 import { windowApi } from './windowApi'
 import { downloadApi } from './downloadApi'
+import { updateApi } from './updateApi'
 
 // Custom APIs for renderer
 const api = {
@@ -36,6 +37,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('sharpApi', sharpApi)
     contextBridge.exposeInMainWorld('ru34Api', ru34Api)
     contextBridge.exposeInMainWorld('downloadApi', downloadApi)
+    contextBridge.exposeInMainWorld('updateApi', updateApi)
   } catch (error) {
     console.error(error)
   }
@@ -51,4 +53,5 @@ if (process.contextIsolated) {
   window.sharpApi = sharpApi
   window.ru34Api = ru34Api
   window.downloadApi = downloadApi
+  window.updateApi = updateApi
 }

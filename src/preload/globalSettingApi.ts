@@ -7,5 +7,6 @@ export const globalSettingApi = {
   setTheme: (theme: themeColor) => ipcRenderer.send('setTheme', theme),
   sendTheme: (callback: (theme: themeColor) => void): void => {
     ipcRenderer.on('page-theme', (_event, theme) => callback(theme))
-  }
+  },
+  getVersion: () => ipcRenderer.invoke('getVersion'),
 }

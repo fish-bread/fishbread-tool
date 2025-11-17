@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <h2>python设置</h2>
+    <h3>python设置</h3>
     正在施工
   </div>
 </template>

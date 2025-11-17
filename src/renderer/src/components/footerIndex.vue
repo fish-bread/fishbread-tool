@@ -6,7 +6,7 @@ import MoeCounter from './moeCounter.vue'
     <moe-counter />
     <div class="footer-box">
       <div>© Renovamen 2025</div>
-      <div>Powered by electron-GUI & fishbread</div>
+      <div>Powered by fishbread-tool & fishbread</div>
     </div>
   </div>
 </template>

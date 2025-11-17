@@ -34,6 +34,7 @@ declare global {
       getTheme: () => Promise<themeColor>
       setTheme: (theme: themeColor) => void
       sendTheme: (callback: (theme: themeColor) => void) => void
+      getVersion: () => Promise<string>
       //puppeteer全局
       getChromePath: () => Promise<string>
       restorePuppeteerPath: () => Promise<string>

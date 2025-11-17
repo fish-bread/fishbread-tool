@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { ipcMain, app } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import {
   createUpdateWindowFunc,
@@ -67,5 +67,9 @@ export const registerUpdateIpcHandlers = (): void => {
   //下载新版本
   ipcMain.on('updateApp', async () => {
     autoUpdater.quitAndInstall()
+  })
+  //获取版本
+  ipcMain.handle('getVersion', async () => {
+    return app.getVersion()
   })
 }
